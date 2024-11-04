@@ -7,7 +7,7 @@ COLUMNS=$(tput cols)
 DURATION_WORK=25
 DURATION_SHORT_BREAK=5
 DURATION_LONG_BREAK=15
-TOTAL_POMODOROS=4
+SESSION_COUNT=4
 
 # Colors using zsh color codes
 MAGENTA='%F{magenta}'
@@ -51,7 +51,7 @@ display_timer() {
     local total=$2
     local session_type=$3
     local pomodoro_count=$4
-    local total_pomodoros=$5
+    local session_count=$5
 
     # Clear screen for each update
     tput cup 0 0
@@ -64,7 +64,7 @@ display_timer() {
     # Move cursor and display session type
     tput cup $((middle_line + 4)) 0
     if [[ $session_type == "work" ]]; then
-        center_text_color "${MAGENTA}Work Session ${pomodoro_count}/${total_pomodoros}${NC}"
+        center_text_color "${MAGENTA}Work Session ${pomodoro_count}/${session_count}${NC}"
     elif [[ $session_type == "short_break" ]]; then
         center_text_color "${GREEN}Short Break${NC}"
     else
@@ -94,7 +94,7 @@ display_timer() {
     # Display next session info
     tput cup $((middle_line + 6)) 0
     if [[ $session_type == "work" ]]; then
-        if [[ $pomodoro_count -eq $total_pomodoros ]]; then
+        if [[ $pomodoro_count -eq $session_count ]]; then
             center_text_color "${BLUE}Next: Long Break${NC}"
         else
             center_text_color "${GREEN}Next: Short Break${NC}"
@@ -109,18 +109,18 @@ run_timer() {
     local duration_minutes=$1
     local session_type=$2
     local pomodoro_count=$3
-    local total_pomodoros=$4
+    local session_count=$4
     
     local elapsed=0
     
     while [ $elapsed -lt $duration_minutes ]; do
-        display_timer $elapsed $duration_minutes $session_type $pomodoro_count $total_pomodoros
+        display_timer $elapsed $duration_minutes $session_type $pomodoro_count $session_count
         sleep 60
         ((elapsed++))
     done
     
     # Display final state
-    display_timer $duration_minutes $duration_minutes $session_type $pomodoro_count $total_pomodoros
+    display_timer $duration_minutes $duration_minutes $session_type $pomodoro_count $session_count
     
     # Play alert sound (using terminal bell)
     echo -ne '\007'
@@ -131,22 +131,22 @@ trap 'echo -e "\n\nExiting Pomodoro Timer..."; exit 0' INT
 
 # Main Pomodoro loop
 pomodoro_count=1
-total_pomodoros=4
+session_count=4
 
 clear
 
 while true; do
     # Work session
-    run_timer $DURATION_WORK "work" $pomodoro_count $total_pomodoros
+    run_timer $DURATION_WORK "work" $pomodoro_count $session_count
     
     # Determine and run break
-    if [[ $pomodoro_count -eq $total_pomodoros ]]; then
+    if [[ $pomodoro_count -eq $session_count ]]; then
         # Long break
-        run_timer $DURATION_LONG_BREAK "long_break" $pomodoro_count $total_pomodoros
+        run_timer $DURATION_LONG_BREAK "long_break" $pomodoro_count $session_count
         pomodoro_count=1
     else
         # Short break
-        run_timer $DURATION_SHORT_BREAK "short_break" $pomodoro_count $total_pomodoros
+        run_timer $DURATION_SHORT_BREAK "short_break" $pomodoro_count $session_count
         ((pomodoro_count++))
     fi
 done
