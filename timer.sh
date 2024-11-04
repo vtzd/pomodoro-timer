@@ -61,23 +61,13 @@ display_timer() {
     LINES=$(tput lines)
     middle_line=$((LINES / 2))
     
-    # Move cursor and display session type
-    tput cup $((middle_line + 4)) 0
-    if [[ $session_type == "work" ]]; then
-        center_text_color "${MAGENTA}Work Session ${pomodoro_count}/${session_count}${NC}"
-    elif [[ $session_type == "short_break" ]]; then
-        center_text_color "${GREEN}Short Break${NC}"
-    else
-        center_text_color "${BLUE}Long Break${NC}"
-    fi
-    
     # Display timer
-    tput cup $middle_line 0
+    tput cup $((middle_line - 2)) 0
     local time_display=$(format_time $elapsed $total)
     center_text "$time_display"
     
     # Display timer progress bar
-    tput cup $((middle_line + 2)) 0
+    tput cup $((middle_line)) 0
     local progress="["
     local fill_count=$(( elapsed * 40 / total ))
     local empty_count=$(( 40 - fill_count ))
@@ -92,7 +82,7 @@ display_timer() {
     center_text "$progress"
     
     # Display next session info
-    tput cup $((middle_line + 6)) 0
+    tput cup $((middle_line + 2)) 0
     if [[ $session_type == "work" ]]; then
         if [[ $pomodoro_count -eq $session_count ]]; then
             center_text_color "${BLUE}Next: Long Break${NC}"
