@@ -80,18 +80,6 @@ display_timer() {
     done
     progress+="]"
     center_text "$progress"
-    
-    # Display next session info
-    tput cup $((middle_line + 2)) 0
-    if [[ $session_type == "work" ]]; then
-        if [[ $pomodoro_count -eq $session_count ]]; then
-            center_text_color "${BLUE}Next: Long Break${NC}"
-        else
-            center_text_color "${GREEN}Next: Short Break${NC}"
-        fi
-    else
-        center_text_color "${MAGENTA}Next: Work Session${NC}"
-    fi
 }
 
 # Function to run a timer session
