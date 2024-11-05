@@ -3,7 +3,7 @@
 # Get terminal width
 COLUMNS=$(tput cols)
 
-# Pomodoro settings
+# Pomodoro settings (time in minutes)
 DURATION_WORK=25
 DURATION_SHORT_BREAK=5
 DURATION_LONG_BREAK=15
@@ -27,6 +27,7 @@ center_text() {
 
 center_text_color() {
     local text="$1"
+
     # Strip color codes for width calculation
     local plain_text="${text//\%F\{*\}/}"  # Remove %F{color}
     plain_text="${plain_text//\%f/}"       # Remove %f
@@ -84,21 +85,21 @@ display_timer() {
 
 # Function to run a timer session
 run_timer() {
-    local duration_minutes=$1
+    local duration=$1
     local session_type=$2
     local pomodoro_count=$3
     local session_count=$4
     
     local elapsed=0
     
-    while [ $elapsed -lt $duration_minutes ]; do
-        display_timer $elapsed $duration_minutes $session_type $pomodoro_count $session_count
+    while [ $elapsed -lt $duration ]; do
+        display_timer $elapsed $duration $session_type $pomodoro_count $session_count
         sleep 60
         ((elapsed++))
     done
     
     # Display final state
-    display_timer $duration_minutes $duration_minutes $session_type $pomodoro_count $session_count
+    display_timer $duration $duration $session_type $pomodoro_count $session_count
     
     # Play alert sound (using terminal bell)
     echo -ne '\007'
