@@ -1,1 +1,2 @@
 - Improve randomization function to avoid duplicates
+- Identifier for current work block 
