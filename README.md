@@ -18,14 +18,13 @@ A minimalist Pomodoro timer that runs directly in your terminal. It features a v
 
 ## Installation
 
-1. Save the script to a file (e.g., `pomodoro.zsh`)
-2. Make it executable:
+1. Create `quotes.txt`
+2. Make script executable:
 ```bash
 chmod +x pomodoro.zsh
 ```
 
 ## Usage
-
 Simply run the script:
 ```bash
 ./pomodoro.zsh
