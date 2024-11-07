@@ -12,7 +12,7 @@ FILENAME="${SCRIPT_DIR}/quotes.txt"
 get_columns() {
     COLUMNS=$(tput cols)
     if [ "$COLUMNS" -eq 0 ]; then
-        COLUMNS=54  # Default to 54 if we can't get terminal width
+        COLUMNS=54
     fi
 }
 
@@ -26,7 +26,7 @@ truncate_text() {
     local line=""
     local result=""
     
-    # Split into words using zsh array splitting
+    # Split into words
     local -a words
     words=(${=text})
     
@@ -55,7 +55,7 @@ truncate_text() {
 
 center_text() {
     local text="$1"
-    get_columns  # Update columns in case terminal was resized
+    get_columns 
     local padding=$(( ($COLUMNS - ${#text}) / 2 ))
     if (( padding < 0 )); then
         padding=0
@@ -73,7 +73,6 @@ display_timer() {
     
     local middle_line=$(($(tput lines) / 2))
 
-    # Ensure middle_line is at least 3 to avoid negative values
     if (( middle_line < 3 )); then
         middle_line=3
     fi
@@ -84,11 +83,9 @@ display_timer() {
     local random_quote_line=$((RANDOM % total_quote_lines + 1))
     local random_quote=$(sed -n "${random_quote_line}p" "$FILENAME")
     
-    # Truncate quote to 25 characters per line and display each line centered
     local truncated_quote=$(truncate_text "$random_quote" 32)
     local line_num=$((middle_line))
     
-    # Display each line of the truncated quote
     while IFS= read -r line; do
         tput cup $line_num 0
         center_text "$line"
